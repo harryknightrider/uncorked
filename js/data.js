@@ -67,7 +67,7 @@ const GRAPES = [
       { name: 'Chenin Blanc', why: 'Apple and honey, and can be oaked or unoaked too.' },
       { name: 'Viognier', why: 'Rich, peachy and full-bodied, for oaky Chardonnay fans.' }
     ],
-    map: { x: 66, y: 44 }, cellar: 'whites'
+    map: { x: 66, y: 44 }, cellar: 'whites', labelLeft: true
   },
   {
     id: 'pinotnoir', name: 'Pinot Noir', colour: 'red', emoji: '🍒',
@@ -112,7 +112,7 @@ const GRAPES = [
       { name: 'Syrah / Shiraz', why: 'Just as bold, with more spice and pepper.' },
       { name: 'Rioja Reserva (Tempranillo)', why: 'Full and oaky, with leather and dried fruit.' }
     ],
-    map: { x: 88, y: 62 }, cellar: 'reds'
+    map: { x: 88, y: 62 }, cellar: 'reds', labelLeft: true
   },
   {
     id: 'syrah', name: 'Syrah / Shiraz', colour: 'red', emoji: '🌶️',
@@ -127,7 +127,100 @@ const GRAPES = [
       { name: 'Malbec', why: 'Dark, rich and generous, but a little softer.' },
       { name: 'Grenache / Garnacha', why: 'Its blending partner in the Rhône. Riper and softer.' }
     ],
-    map: { x: 80, y: 84 }, cellar: 'reds'
+    map: { x: 80, y: 84 }, cellar: 'reds', labelLeft: true
+  },
+
+  /* --- Bonus grapes (Cellar 7). bonus: true keeps them apart from the core 8 --- */
+  {
+    id: 'malbec', name: 'Malbec', colour: 'red', emoji: '🌺', bonus: true,
+    nickname: 'The Smooth Argentine',
+    personality: 'Dark, plush and generous. Born in France, but found fame high in the Andes in Argentina.',
+    flavours: ['Plum', 'Blackberry', 'Violet', 'Chocolate'],
+    body: 'Full', acidity: 'Medium', tannin: 'Medium to high, but soft', oak: 'Often',
+    places: 'Mendoza (Argentina), Cahors (France)',
+    food: 'Steak, burgers, barbecue',
+    oneLiner: 'Dark, plummy and velvety. The steak-night favourite.',
+    tryNext: [
+      { name: 'Australian Shiraz', why: 'Just as dark, plush and generous, with a peppery, spicy kick.' },
+      { name: 'Chilean Carmenère', why: 'Like Malbec, a Bordeaux grape that found fame in South America. Soft and plummy, with a hint of green pepper, and often great value.' },
+      { name: 'Rioja Crianza (Tempranillo)', why: 'Smooth and juicy, with a touch of vanilla from oak. A gentle step towards Europe.' }
+    ],
+    map: { x: 86, y: 44 }, cellar: 'bonus', labelLeft: true
+  },
+  {
+    id: 'tempranillo', name: 'Tempranillo', colour: 'red', emoji: '🐂', bonus: true,
+    nickname: 'The Spanish Classic',
+    personality: 'Spain\'s star grape. Labels usually name the place (Rioja) rather than the grape, and words like Crianza and Reserva tell you how long it was aged.',
+    flavours: ['Red cherry', 'Strawberry', 'Vanilla', 'Leather'],
+    body: 'Medium to full', acidity: 'Medium', tannin: 'Medium', oak: 'Usually (often American oak: vanilla and coconut)',
+    places: 'Rioja and Ribera del Duero (Spain)',
+    food: 'Roast lamb, chorizo, tapas, Manchego',
+    oneLiner: 'Cherry, vanilla and leather. Look for "Rioja" on the label.',
+    tryNext: [
+      { name: 'Chianti (Sangiovese)', why: 'Another savoury, food-loving European red, with more zing.' },
+      { name: 'Garnacha (Grenache)', why: 'Spain\'s other big red: riper, juicier and softer.' }
+    ],
+    map: { x: 62, y: 74 }, cellar: 'bonus'
+  },
+  {
+    id: 'sangiovese', name: 'Sangiovese', colour: 'red', emoji: '🍅', bonus: true,
+    nickname: 'The Italian Foodie',
+    personality: 'Tangy, savoury and made for the dinner table. The grape behind Chianti.',
+    flavours: ['Sour cherry', 'Tomato leaf', 'Dried herbs', 'Earth'],
+    body: 'Medium', acidity: 'High', tannin: 'Medium to high', oak: 'Sometimes',
+    places: 'Tuscany (Italy): Chianti, Brunello di Montalcino',
+    food: 'Pizza, tomato pasta, lasagne',
+    oneLiner: 'Tangy cherry and herbs. Pizza and pasta\'s best friend.',
+    tryNext: [
+      { name: 'Rioja Crianza (Tempranillo)', why: 'Similar savoury cherry, but softer, with vanilla from oak.' },
+      { name: 'Pinot Noir', why: 'Lighter and silkier, with the same red-cherry charm.' }
+    ],
+    map: { x: 44, y: 70 }, cellar: 'bonus', labelLeft: true
+  },
+  {
+    id: 'grenache', name: 'Grenache', colour: 'red', emoji: '🍓', bonus: true,
+    nickname: 'The Sun-Lover',
+    personality: 'Loves heat and ripens fully, so it is juicy, soft and often quite strong. The heart of Côtes du Rhône, and of many rosés. Called Garnacha in Spain.',
+    flavours: ['Strawberry', 'Raspberry', 'White pepper', 'Dried herbs'],
+    body: 'Medium to full', acidity: 'Low to medium', tannin: 'Low to medium', oak: 'Sometimes',
+    places: 'Southern Rhône (France), Spain (Garnacha), Australia',
+    food: 'Sausages, casseroles, roast veg, barbecue',
+    oneLiner: 'Juicy strawberry and spice. Soft, warm and easy to love.',
+    tryNext: [
+      { name: 'Syrah / Shiraz', why: 'Its Rhône partner: darker and more peppery.' },
+      { name: 'Merlot', why: 'Just as soft and juicy, with plum instead of strawberry.' }
+    ],
+    map: { x: 74, y: 34 }, cellar: 'bonus'
+  },
+  {
+    id: 'albarino', name: 'Albariño', colour: 'white', emoji: '🐚', bonus: true,
+    nickname: 'The Seaside One',
+    personality: 'Grown by the Atlantic in north-west Spain, it tastes fresh and zingy, with a hint of the sea.',
+    flavours: ['Lemon', 'Peach', 'Grapefruit', 'A salty tang'],
+    body: 'Light to medium', acidity: 'High', tannin: null, oak: 'Unoaked',
+    places: 'Rías Baixas (Spain), Vinho Verde (Portugal, where it is called Alvarinho)',
+    food: 'Seafood, grilled fish, tapas',
+    oneLiner: 'Zesty, peachy and a little salty. Born for seafood.',
+    tryNext: [
+      { name: 'Sauvignon Blanc', why: 'Just as zingy, with grassy, green flavours.' },
+      { name: 'Dry Riesling', why: 'Crisp and citrusy, with more floral perfume.' }
+    ],
+    map: { x: 24, y: 46 }, cellar: 'bonus', labelLeft: true
+  },
+  {
+    id: 'gewurz', name: 'Gewürztraminer', colour: 'white', emoji: '🌹', bonus: true,
+    nickname: 'The Perfumed One',
+    personality: 'Impossible to miss: it smells like a bunch of roses and a bowl of lychees. Often off-dry, which makes it brilliant with spicy food.',
+    flavours: ['Lychee', 'Rose', 'Ginger', 'Tropical fruit'],
+    body: 'Medium to full', acidity: 'Low', tannin: null, oak: 'Unoaked',
+    places: 'Alsace (France), Germany, New Zealand',
+    food: 'Thai and Indian curries, Chinese takeaway, strong cheeses',
+    oneLiner: 'Lychee and roses. The spicy-food lifesaver.',
+    tryNext: [
+      { name: 'Off-dry Riesling', why: 'Also great with spice, but zingier and less perfumed.' },
+      { name: 'Pinot Gris from Alsace', why: 'Rich and gently spicy, but less flowery.' }
+    ],
+    map: { x: 52, y: 8 }, cellar: 'bonus'
   }
 ];
 
@@ -221,6 +314,41 @@ const QUESTIONS = {
   r5: { topic: 'reds', q: 'You fancy a red with black pepper and savoury, smoky notes. Pick…',
         options: ['Syrah from the Rhône', 'Pinot Noir from Burgundy', 'Chilean Merlot', 'Italian Pinot Grigio'], answer: 0,
         why: 'Cooler-climate Syrah, like the Northern Rhône, is famous for black pepper.' },
+
+  /* --- Bonus grapes (Cellar 7) --- */
+  x1: { topic: 'bonus', q: 'Pizza night with a tomato-rich margherita. Which red?',
+        options: ['Chianti (Sangiovese)', 'Cabernet Sauvignon', 'Gewürztraminer', 'Sauternes'], answer: 0,
+        why: 'Tomatoes are high in acid. Chianti\'s own zingy acidity keeps up, so the wine stays fresh and fruity.' },
+  x2: { topic: 'bonus', q: 'Grilled prawns and squid by the sea. Which white?',
+        options: ['Albariño', 'Oaked Chardonnay', 'Port', 'Malbec'], answer: 0,
+        why: 'Albariño is zesty and a little salty: made for seafood.' },
+  x3: { topic: 'bonus', q: 'A takeaway Thai red curry with plenty of heat. Which bottle?',
+        options: ['Gewürztraminer', 'Cabernet Sauvignon', 'Rioja Gran Reserva', 'A 15% Barossa Shiraz'], answer: 0,
+        why: 'Aromatic, often off-dry and not too strong, Gewürztraminer cools the chilli instead of fanning the flames.' },
+  x4: { topic: 'bonus', q: 'You always order Malbec. Which is a similar but new choice?',
+        options: ['Australian Shiraz', 'Pinot Grigio', 'Prosecco', 'Sauvignon Blanc'], answer: 0,
+        why: 'Shiraz is just as dark, plush and generous, with extra spice.' },
+  x5: { topic: 'bonus', q: 'On a Spanish wine list you see "Rioja Reserva". What does "Reserva" tell you?',
+        options: ['It was aged for longer, including time in oak', 'It is sweet', 'It is a white wine', 'It comes from Argentina'], answer: 0,
+        why: 'Crianza, Reserva and Gran Reserva mean more and more ageing, which brings vanilla, leather and softer tannins.' },
+  x6: { topic: 'bonus', q: 'Malbec is most famous from which country?',
+        options: ['Argentina', 'Italy', 'Germany', 'New Zealand'], answer: 0,
+        why: 'Mendoza, high in the Andes, made Malbec a star.' },
+  x7: { topic: 'bonus', q: 'Chianti is made mainly from which grape?',
+        options: ['Sangiovese', 'Tempranillo', 'Grenache', 'Merlot'], answer: 0,
+        why: 'Chianti is in Tuscany, and Tuscany\'s grape is Sangiovese.' },
+  x8: { topic: 'bonus', q: 'Which grape smells strongly of lychee and roses?',
+        options: ['Gewürztraminer', 'Albariño', 'Chardonnay', 'Sauvignon Blanc'], answer: 0,
+        why: 'That unmistakable perfume is Gewürztraminer\'s calling card.' },
+  x9: { topic: 'bonus', q: 'Rioja is made mainly from which grape?',
+        options: ['Tempranillo', 'Malbec', 'Pinot Noir', 'Sangiovese'], answer: 0,
+        why: 'Tempranillo is Spain\'s star red, and the backbone of Rioja.' },
+  x10: { topic: 'bonus', q: 'Côtes du Rhône reds are usually based on which soft, juicy grape?',
+        options: ['Grenache', 'Pinot Noir', 'Cabernet Sauvignon', 'Malbec'], answer: 0,
+        why: 'Southern Rhône reds lean on sun-loving Grenache, often with some Syrah.' },
+  x11: { topic: 'bonus', q: 'Albariño comes mainly from which country?',
+        options: ['Spain', 'Australia', 'Germany', 'Chile'], answer: 0,
+        why: 'Rías Baixas in north-west Spain, right on the Atlantic coast.' },
 
   /* --- Taste-alike (If you like… try…) --- */
   t1: { topic: 'reds', q: "You love Merlot's soft, plummy style. What should you try next?",
@@ -596,6 +724,44 @@ const CELLARS = [
       { type: 'recall', title: 'Quick recall', intro: 'Five quick questions to lock it in.',
         questions: ['v1', 'v2', 'v3', 'v4', 'v5'] }
     ]
+  },
+  {
+    id: 'bonus', num: 7, title: 'Bonus Grapes', emoji: '🌟',
+    blurb: 'Malbec, Rioja, Chianti and friends: six popular wines from beyond the big eight.',
+    badge: { emoji: '🧭', name: 'Wine Explorer' },
+    grapes: ['malbec', 'tempranillo', 'sangiovese', 'grenache', 'albarino', 'gewurz'],
+    steps: [
+      { type: 'learn', title: 'Meet the characters', grapeCards: ['malbec', 'tempranillo', 'sangiovese', 'grenache', 'albarino', 'gewurz'],
+        cards: [
+          { emoji: '🧭', title: 'Six more to know',
+            text: 'You know the big eight. These six turn up on almost every wine list and supermarket shelf, and they\'re great next steps from the wines you already like.' },
+          { emoji: '🏷️', title: 'Place, not grape',
+            text: 'In Europe, labels often name the <b>place</b>, not the grape:<br><b>Rioja</b> = mostly Tempranillo<br><b>Chianti</b> = Sangiovese<br><b>Côtes du Rhône</b> = mostly Grenache<br><br>Learn these three and half the wine list makes sense.' }
+        ]},
+      { type: 'sort', title: 'Read the Label', intro: 'The label names the place. Which grape is in the bottle?',
+        categories: ['Tempranillo', 'Sangiovese', 'Grenache'],
+        items: [
+          { label: 'Rioja Reserva', answer: 'Tempranillo', why: 'Rioja is Tempranillo country.' },
+          { label: 'Chianti Classico', answer: 'Sangiovese', why: 'Chianti is made from Sangiovese.' },
+          { label: 'Côtes du Rhône', answer: 'Grenache', why: 'Southern Rhône reds are mostly Grenache.' },
+          { label: 'Ribera del Duero', answer: 'Tempranillo', why: 'Spain\'s other famous Tempranillo region, usually bolder than Rioja.' },
+          { label: 'Brunello di Montalcino', answer: 'Sangiovese', why: 'A grand, long-lived Tuscan Sangiovese.' },
+          { label: 'Châteauneuf-du-Pape', answer: 'Grenache', why: 'The Rhône\'s most famous red, led by Grenache.' }
+        ]},
+      { type: 'whoami', title: 'Who Am I?', intro: 'Guess the grape from the clues. The fewer clues you need, the more corks you win.',
+        rounds: [
+          { answer: 'malbec', clues: ['I\'m dark, full-bodied and velvety.', 'Plums, blackberries and a hint of violets.', 'I was born in France but found fame elsewhere.', 'Mendoza in Argentina is my home.'] },
+          { answer: 'tempranillo', clues: ['I\'m often aged in oak, so I can taste of vanilla.', 'Red cherry, with leather as I get older.', 'Words like Crianza and Reserva describe my ageing.', 'I\'m the grape behind Rioja.'] },
+          { answer: 'sangiovese', clues: ['I\'m tangy, with high acidity.', 'Sour cherry, tomato leaf and dried herbs.', 'I\'m happiest with pizza and pasta.', 'Chianti is made from me.'] },
+          { answer: 'grenache', clues: ['I love heat and ripen fully, so I\'m often quite strong.', 'Juicy strawberry and raspberry, with a little spice.', 'I\'m used in lots of rosé.', 'I lead in Côtes du Rhône, and Spain calls me Garnacha.'] },
+          { answer: 'albarino', clues: ['I\'m a white with zingy acidity.', 'Lemon and peach, with a salty tang.', 'I grow by the Atlantic Ocean.', 'Rías Baixas in Spain is my home.'] },
+          { answer: 'gewurz', clues: ['I\'m a white with low acidity and lots of perfume.', 'Lychee, roses and a hint of ginger.', 'I\'m often off-dry, so I\'m great with spicy food.', 'Alsace in France is my home, and my name is hard to spell.'] }
+        ], choices: ['malbec', 'tempranillo', 'sangiovese', 'grenache', 'albarino', 'gewurz'] },
+      { type: 'mcq', title: 'Order It Right', intro: 'Real menus, real moments. Which of the new six would you pick?',
+        questions: ['x1', 'x2', 'x3', 'x4', 'x5'] },
+      { type: 'recall', title: 'Quick recall', intro: 'Five quick questions to lock it in.',
+        questions: ['x6', 'x7', 'x8', 'x9', 'x10', 'x11'] }
+    ]
   }
 ];
 
@@ -638,13 +804,16 @@ const FINAL_TEST = {
 };
 
 /* ---------- Cheat sheet extras ---------- */
-// Popular wines that aren't one of the 8 core grapes, shown in the
-// "If you like… try…" finder. Add more in the same shape.
+// Popular wines that aren't one of the game's grapes, shown in the
+// "If you like… try…" finder under "Popular favourites". Same shape as a grape's tryNext.
 const FINDER_EXTRAS = [
-  { id: 'malbec', name: 'Malbec', tryNext: [
-    { name: 'Australian Shiraz', why: 'Just as dark, plush and generous, with a peppery, spicy kick.' },
-    { name: 'Chilean Carmenère', why: 'Like Malbec, a Bordeaux grape that found fame in South America. Soft and plummy, with a hint of green pepper, and often great value.' },
-    { name: 'Rioja Crianza (Tempranillo)', why: 'Smooth and juicy, with a touch of vanilla from oak. A gentle step towards Europe.' }
+  { id: 'prosecco', name: 'Prosecco', tryNext: [
+    { name: 'Crémant', why: 'French fizz made the Champagne way, with finer bubbles, at a Prosecco-ish price.' },
+    { name: 'Cava', why: 'Spain\'s fizz, also made the Champagne way: drier, crisper and a little toasty.' }
+  ] },
+  { id: 'rose', name: 'Provence rosé', tryNext: [
+    { name: 'Spanish rosado (Garnacha)', why: 'A little deeper in colour and juicier, with ripe strawberry.' },
+    { name: 'Albariño', why: 'If you love rosé for its crisp freshness, this zesty white is a lovely switch.' }
   ] }
 ];
 
@@ -667,6 +836,133 @@ const DISHES = [
   { emoji: '🍝', dish: 'Creamy pasta', wines: 'Oaked Chardonnay' },
   { emoji: '🍄', dish: 'Mushrooms & duck', wines: 'Pinot Noir' }
 ];
+
+/* ---------- "What am I eating?" pairing tool ----------
+   picks: up to 3 wines (best first). avoid: one to steer clear of. rule: the why. */
+const DISH_FINDER = [
+  { emoji: '🥩', name: 'Steak or roast beef', cat: 'Meat',
+    picks: [{ wine: 'Malbec', why: 'Plush and dark: a steakhouse classic.' }, { wine: 'Cabernet Sauvignon', why: 'Its grippy tannin melts into the fat and protein.' }, { wine: 'Syrah / Shiraz', why: 'Bold, with a peppery kick.' }],
+    avoid: { wine: 'Pinot Grigio', why: 'Lovely wine, but the beef flattens it.' }, rule: 'Tannin loves protein and fat.' },
+  { emoji: '🐑', name: 'Roast lamb', cat: 'Meat',
+    picks: [{ wine: 'Rioja (Tempranillo)', why: 'Savoury cherry and vanilla: a match made in Spain.' }, { wine: 'Cabernet Sauvignon', why: 'Bordeaux and lamb are old friends.' }, { wine: 'Syrah', why: 'Peppery and savoury, like rosemary in a glass.' }],
+    avoid: { wine: 'Light, crisp whites', why: 'Too delicate for rich, fatty lamb.' }, rule: 'Match weight with weight.' },
+  { emoji: '🍗', name: 'Roast chicken', cat: 'Meat',
+    picks: [{ wine: 'Chardonnay', why: 'Round and rich enough for roast chicken and gravy.' }, { wine: 'Pinot Noir', why: 'Light, silky red that won\'t overpower it.' }, { wine: 'Merlot', why: 'Soft and fruity: everyone at the table will be happy.' }],
+    rule: 'Medium dish, medium wine. Red or white both work.' },
+  { emoji: '🍔', name: 'Burgers & BBQ', cat: 'Meat',
+    picks: [{ wine: 'Malbec', why: 'Juicy, dark and smoky-friendly.' }, { wine: 'Australian Shiraz', why: 'Jammy and bold, ready for sticky sauce.' }, { wine: 'Grenache', why: 'Soft, ripe and easy-going.' }],
+    avoid: { wine: 'Delicate whites', why: 'Smoke and char drown them out.' }, rule: 'Big flavours need big wines.' },
+  { emoji: '🌭', name: 'Sausages & mash', cat: 'Meat',
+    picks: [{ wine: 'Côtes du Rhône (Grenache)', why: 'Warm, spicy and comforting.' }, { wine: 'Merlot', why: 'Soft and plummy with onion gravy.' }],
+    rule: 'Comfort food loves a soft, fruity red.' },
+  { emoji: '🍟', name: 'Fish & chips', cat: 'Fish',
+    picks: [{ wine: 'Champagne, Cava or Prosecco', why: 'Bubbles and acidity cut through the batter. A seaside treat.' }, { wine: 'Sauvignon Blanc', why: 'Zesty, like a squeeze of lemon.' }, { wine: 'Chablis', why: 'Crisp and clean.' }],
+    avoid: { wine: 'Big, tannic reds', why: 'Tannin and fish can taste metallic.' }, rule: 'Salt and acid are wine\'s friends.' },
+  { emoji: '🐟', name: 'White fish & seafood', cat: 'Fish',
+    picks: [{ wine: 'Albariño', why: 'Zesty and a little salty: born for seafood.' }, { wine: 'Chablis', why: 'Crisp and pure.' }, { wine: 'Sauvignon Blanc', why: 'Zingy and fresh.' }],
+    avoid: { wine: 'Big, tannic reds', why: 'They make fish taste metallic.' }, rule: 'Light dish, light wine.' },
+  { emoji: '🍣', name: 'Salmon or sushi', cat: 'Fish',
+    picks: [{ wine: 'Pinot Noir', why: 'Light, low-tannin red that loves salmon.' }, { wine: 'Dry Riesling', why: 'Crisp and citrusy, great with sushi.' }, { wine: 'Dry rosé', why: 'Fresh and easy with both.' }],
+    rule: 'Oily fish can take a light red. Keep the tannin low.' },
+  { emoji: '🍕', name: 'Pizza', cat: 'Pasta & veggie',
+    picks: [{ wine: 'Chianti (Sangiovese)', why: 'Its zingy acidity matches the tomato.' }, { wine: 'Grenache', why: 'Juicy and easy-going for a pepperoni.' }, { wine: 'Merlot', why: 'A soft, safe all-rounder.' }],
+    rule: 'Tomatoes are acidic, so pick a wine with zing.' },
+  { emoji: '🍝', name: 'Tomato pasta or lasagne', cat: 'Pasta & veggie',
+    picks: [{ wine: 'Chianti (Sangiovese)', why: 'Italy\'s answer to tomato sauce.' }, { wine: 'Rioja Crianza', why: 'Smooth and savoury with a meaty ragù.' }],
+    rule: 'Acidic food needs an acidic wine.' },
+  { emoji: '🧀', name: 'Creamy pasta (carbonara)', cat: 'Pasta & veggie',
+    picks: [{ wine: 'Oaked Chardonnay', why: 'Creamy wine, creamy dish.' }, { wine: 'Pinot Grigio', why: 'A light, fresh contrast if you\'d rather.' }],
+    rule: 'Match weight with weight.' },
+  { emoji: '🍄', name: 'Mushroom risotto', cat: 'Pasta & veggie',
+    picks: [{ wine: 'Pinot Noir', why: 'Earthy and silky: a classic.' }, { wine: 'Oaked Chardonnay', why: 'Rich and round, like the risotto.' }],
+    avoid: { wine: 'Big, tannic reds', why: 'Umami makes tannin taste harsher.' }, rule: 'Umami food makes wine taste harsher, so go soft and fruity.' },
+  { emoji: '🥗', name: 'Salads & goat\'s cheese', cat: 'Pasta & veggie',
+    picks: [{ wine: 'Sauvignon Blanc', why: 'Sancerre and goat\'s cheese are a famous match.' }, { wine: 'Provence rosé', why: 'Light and summery.' }],
+    avoid: { wine: 'Oaky, full-bodied wines', why: 'They\'ll swamp a light salad.' }, rule: 'Light food, light wine. Zingy dressing, zingy wine.' },
+  { emoji: '🍛', name: 'Indian curry', cat: 'Spicy & takeaway',
+    picks: [{ wine: 'Off-dry Riesling', why: 'A touch of sweetness cools the heat.' }, { wine: 'Gewürztraminer', why: 'Aromatic and spice-friendly.' }, { wine: 'Fruity rosé', why: 'Chilled and refreshing.' }],
+    avoid: { wine: 'Strong, tannic reds', why: 'Chilli makes alcohol and tannin burn.' }, rule: 'Spicy food? Go low alcohol, a touch sweet.' },
+  { emoji: '🌶️', name: 'Thai curry', cat: 'Spicy & takeaway',
+    picks: [{ wine: 'Gewürztraminer', why: 'Lychee and ginger notes love lemongrass and chilli.' }, { wine: 'Off-dry Riesling', why: 'Zingy, a little sweet and lower in alcohol.' }],
+    avoid: { wine: 'High-alcohol reds', why: 'Chilli and alcohol make each other hotter.' }, rule: 'Spicy food? Go low alcohol, a touch sweet.' },
+  { emoji: '🥡', name: 'Chinese takeaway', cat: 'Spicy & takeaway',
+    picks: [{ wine: 'Off-dry Riesling', why: 'Handles sweet-and-sour and a bit of heat.' }, { wine: 'Pinot Noir', why: 'Soft and fruity with crispy duck.' }],
+    avoid: { wine: 'Bone-dry, tannic reds', why: 'Sweet sauces make them taste bitter and sour.' }, rule: 'Sweet food makes dry wine taste harsher.' },
+  { emoji: '🧀', name: 'Cheeseboard', cat: 'Cheese, puds & nibbles',
+    picks: [{ wine: 'Port', why: 'With Stilton: sweet and salty heaven.' }, { wine: 'Rioja or Cabernet', why: 'With mature Cheddar.' }, { wine: 'Sauvignon Blanc', why: 'With goat\'s cheese.' }],
+    rule: 'Salty cheese loves a sweeter wine.' },
+  { emoji: '🍫', name: 'Chocolate pudding', cat: 'Cheese, puds & nibbles',
+    picks: [{ wine: 'Ruby Port', why: 'Sweet and rich enough to stand up to chocolate.' }],
+    avoid: { wine: 'Dry red wine', why: 'Sweet pudding makes it taste sour and bitter.' }, rule: 'The wine should be at least as sweet as the pudding.' },
+  { emoji: '🍮', name: 'Sticky toffee or fruit pudding', cat: 'Cheese, puds & nibbles',
+    picks: [{ wine: 'Sauternes', why: 'Honey and apricot: glorious with toffee.' }, { wine: 'Sweet Muscat', why: 'Grapey and sweet, lovely with fruit.' }],
+    avoid: { wine: 'Dry wines', why: 'They\'ll taste thin and sour next to pudding.' }, rule: 'The wine should be at least as sweet as the pudding.' },
+  { emoji: '🫒', name: 'Nibbles & crisps', cat: 'Cheese, puds & nibbles',
+    picks: [{ wine: 'Prosecco or Cava', why: 'Salty snacks and bubbles are a party staple.' }, { wine: 'Albariño', why: 'Zesty and a little salty, lovely with olives.' }],
+    rule: 'Salt makes wine taste softer and fruitier.' }
+];
+
+/* ---------- My Palate quiz ----------
+   Each answer gives points to palate types. Highest total wins (ties go to the first listed). */
+const PALATE_QUIZ = [
+  { q: 'How do you take your coffee?', options: [
+    { label: 'Strong black espresso', pts: { bold: 2, classic: 1 } },
+    { label: 'A smooth flat white', pts: { smooth: 2, velvet: 1 } },
+    { label: 'Sweet: caramel latte, please', pts: { perfumed: 2, velvet: 1 } },
+    { label: 'No coffee. Lemon & ginger tea', pts: { zesty: 2, classic: 1 } } ] },
+  { q: 'Pick a chocolate.', options: [
+    { label: '85% dark', pts: { bold: 2, classic: 1 } },
+    { label: 'Creamy milk chocolate', pts: { smooth: 2, velvet: 1 } },
+    { label: 'A salted caramel truffle', pts: { velvet: 2, perfumed: 1 } },
+    { label: 'A lemon tart instead', pts: { zesty: 1, perfumed: 1 } } ] },
+  { q: 'Which fruit bowl are you reaching for?', options: [
+    { label: 'Green apples and limes', pts: { zesty: 2 } },
+    { label: 'Ripe peaches and mango', pts: { velvet: 2, perfumed: 1 } },
+    { label: 'Strawberries and cherries', pts: { classic: 2, smooth: 1 } },
+    { label: 'Blackcurrants and plums', pts: { bold: 2, velvet: 1 } } ] },
+  { q: 'Your dream dinner?', options: [
+    { label: 'A seafood platter by the sea', pts: { zesty: 2, classic: 1 } },
+    { label: 'A creamy chicken pie', pts: { velvet: 2, smooth: 1 } },
+    { label: 'A rare steak', pts: { bold: 2 } },
+    { label: 'A fragrant Thai curry', pts: { perfumed: 2 } } ] },
+  { q: 'Pick a smell.', options: [
+    { label: 'Freshly cut grass', pts: { zesty: 2 } },
+    { label: 'A bunch of roses', pts: { perfumed: 2 } },
+    { label: 'A forest walk after rain', pts: { classic: 2 } },
+    { label: 'Vanilla and warm toast', pts: { velvet: 2 } } ] },
+  { q: 'Your ideal Friday night?', options: [
+    { label: 'Feet up, comfy and easy', pts: { smooth: 2 } },
+    { label: 'A big night out', pts: { bold: 2 } },
+    { label: 'A cosy dinner with old friends', pts: { classic: 2, velvet: 1 } },
+    { label: 'Trying a new pop-up restaurant', pts: { zesty: 1, perfumed: 1 } } ] },
+  { q: 'How do you feel about sweets?', options: [
+    { label: 'Love them', pts: { perfumed: 2, smooth: 1 } },
+    { label: 'Now and then', pts: { smooth: 1, velvet: 1 } },
+    { label: 'I\'d rather have savoury snacks', pts: { classic: 2, bold: 1 } },
+    { label: 'Sour sweets all the way', pts: { zesty: 1 } } ] }
+];
+
+// white / red / dare are grape ids. say = what to ask for in a restaurant.
+const PALATE_TYPES = {
+  zesty:    { emoji: '🍋', title: 'The Zesty Explorer', text: 'You love fresh, bright, mouth-watering flavours. Think crisp, unoaked wines with plenty of zing.',
+              white: { id: 'sauvignon', why: 'Grassy, zingy and bright.' }, red: { id: 'pinotnoir', why: 'Light and fresh, best slightly chilled.' }, dare: { id: 'albarino', why: 'All the zing, plus peach and a salty tang.' },
+              say: '"Something crisp and zesty, nothing oaky."' },
+  smooth:   { emoji: '🍑', title: 'The Easy-Going Charmer', text: 'You like wines that are soft, fruity and easy to enjoy, without sharp edges or heavy oak.',
+              white: { id: 'pinotgrigio', why: 'Light, easy and refreshing.' }, red: { id: 'merlot', why: 'Soft, plummy and smooth.' }, dare: { id: 'malbec', why: 'Just as smooth, with more depth.' },
+              say: '"Something soft and fruity, nothing too heavy."' },
+  velvet:   { emoji: '🍮', title: 'The Velvet Indulger', text: 'Rich, round and a little luxurious. You enjoy ripe fruit, creamy textures and a touch of oak.',
+              white: { id: 'chardonnay', why: 'Ask for an oaked one: creamy, toasty and ripe.' }, red: { id: 'syrah', why: 'Australian Shiraz: jammy, plush and warm.' }, dare: { id: 'tempranillo', why: 'Rioja Reserva brings vanilla and soft, smooth fruit.' },
+              say: '"Something rich and smooth, maybe with a bit of oak."' },
+  bold:     { emoji: '🔥', title: 'The Bold Adventurer', text: 'Big flavours, dark fruit and a bit of grip. You like a wine that makes a statement.',
+              white: { id: 'chardonnay', why: 'If you fancy a white, go for a full, oaked one.' }, red: { id: 'cabernet', why: 'Blackcurrant, cedar and plenty of tannin.' }, dare: { id: 'sangiovese', why: 'Just as grippy, but tangier and more savoury.' },
+              say: '"Something big and bold, with a bit of grip."' },
+  perfumed: { emoji: '🌸', title: 'The Fruit & Flowers Fan', text: 'You love aromatic, fruity wines, and a touch of sweetness doesn\'t scare you.',
+              white: { id: 'gewurz', why: 'Lychee and roses in a glass.' }, red: { id: 'grenache', why: 'Juicy strawberry and soft tannins.' }, dare: { id: 'riesling', why: 'Try an off-dry one: fruity, floral and zingy.' },
+              say: '"Something fruity and aromatic, maybe off-dry."' },
+  classic:  { emoji: '🍄', title: 'The Earthy Classicist', text: 'You like subtle, savoury wines that taste even better with food. Elegance over power.',
+              white: { id: 'chardonnay', why: 'Ask for Chablis: crisp, pure and mineral.' }, red: { id: 'pinotnoir', why: 'Silky red fruit that turns earthy with age.' }, dare: { id: 'tempranillo', why: 'Savoury cherry and leather, made for the table.' },
+              say: '"Something elegant and savoury that goes with food."' }
+};
 
 const ORDERING_PHRASES = [
   '"Something dry and crisp, not too oaky."',

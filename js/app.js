@@ -11,6 +11,7 @@
   const GRAPE = Object.fromEntries(GRAPES.map(g => [g.id, g]));
   const CELLAR = Object.fromEntries(CELLARS.map(c => [c.id, c]));
   const PLAYABLE = CELLARS.filter(c => !c.comingSoon);
+  const CORE = GRAPES.filter(g => !g.bonus), BONUS = GRAPES.filter(g => g.bonus);
   const CHEERS = ['Spot on!', 'Cheers to that! 🥂', 'Nailed it!', 'Bang on!', 'Lovely stuff!', 'Top marks!'];
   const OOPS = ['Not quite!', 'Close, but no cork.', 'Ooh, not this time.'];
 
@@ -23,7 +24,7 @@
 
   /* ---------- Saved progress (on this device only) ---------- */
   function freshState() {
-    return { ageOk: false, corks: 0, cellars: {}, missed: [], test: { best: null, passed: false, name: '', last: null } };
+    return { ageOk: false, corks: 0, cellars: {}, missed: [], palate: null, test: { best: null, passed: false, name: '', last: null } };
   }
   function load() {
     try {
@@ -64,7 +65,7 @@
     if (!state.ageOk) return viewGate();
     const [name, arg] = (location.hash.replace('#', '') || 'home').split('/');
     const routes = { home: viewHome, map: viewMap, cheat: viewCheat, test: startTest, results: viewResults, cellar: () => startCellar(arg),
-      move: viewMove, import: () => viewImport(arg) };
+      move: viewMove, import: () => viewImport(arg), eat: () => viewEat(arg), palate: viewPalate };
     (routes[name] || viewHome)();
   }
   function go(hash) { if (location.hash === '#' + hash) route(); else location.hash = hash; }
@@ -131,6 +132,9 @@
       <div class="quick-links">
         <a class="quick-link" href="#map"><b>🗺️ Flavour Map</b><span>See where every grape sits.</span></a>
         <a class="quick-link" href="#cheat"><b>📱 At the Table</b><span>Your cheat sheet for ordering.</span></a>
+        <a class="quick-link" href="#eat"><b>🍽️ What am I eating?</b><span>Pick your dish, get the wine.</span></a>
+        <a class="quick-link" href="#palate"><b>${state.palate && PALATE_TYPES[state.palate] ? `${PALATE_TYPES[state.palate].emoji} My Palate` : '👅 My Palate'}</b>
+          <span>${state.palate && PALATE_TYPES[state.palate] ? `You're ${esc(PALATE_TYPES[state.palate].title)}.` : 'A 1-minute quiz to find your wines.'}</span></a>
       </div>
 
       <h2>The vineyard path</h2>
@@ -144,17 +148,16 @@
 
   /* ---------- Flavour Map (SVG) ---------- */
   function flavourMapSVG(showIds, highlightIds = []) {
-    const W = 400, H = 300, L = 44, R = 16, T = 18, B = 40;
+    const W = 400, H = 330, L = 44, R = 16, T = 18, B = 40;
     const px = x => L + (x / 100) * (W - L - R);
     const py = y => T + (y / 100) * (H - T - B);
-    const leftLabels = ['cabernet', 'syrah'];
     const dots = GRAPES.map(g => {
       const x = px(g.map.x), y = py(g.map.y);
       if (!showIds.includes(g.id)) {
         return `<g opacity=".5"><circle cx="${x}" cy="${y}" r="9" fill="#eadfd3"/><text x="${x}" y="${y + 4}" text-anchor="middle" class="lbl" fill="#6e5b61">?</text></g>`;
       }
       const fill = g.colour === 'white' ? '#e7c55a' : '#7a1f3d';
-      const left = leftLabels.includes(g.id);
+      const left = !!g.labelLeft;
       const hl = highlightIds.includes(g.id);
       return `<g>
         ${hl ? `<circle cx="${x}" cy="${y}" r="16" fill="${fill}" opacity=".18"><animate attributeName="r" values="11;18;11" dur="1.8s" repeatCount="indefinite"/></circle>` : ''}
@@ -708,24 +711,34 @@
      AT THE TABLE: the cheat sheet
      ====================================================================== */
   function viewCheat() {
+    const pal = state.palate && PALATE_TYPES[state.palate];
     const section = (id, emoji, title, inner) => `<section class="card" id="${id}"><h2 class="section-title"><span aria-hidden="true">${emoji}</span>${title}</h2>${inner}</section>`;
     const grapeRow = g => `<div class="mini-grape"><div class="face ${g.colour}" aria-hidden="true">${g.emoji}</div><div><b>${esc(g.name)}</b><span>${esc(g.oneLiner)}</span></div></div>`;
     render(`
       <h1>At the Table</h1>
       <p class="muted">Your pocket cheat sheet. Pull it up at the restaurant or in the supermarket. Tip: add this site to your phone's home screen and it works offline.</p>
+      <div class="quick-links" style="margin:14px 0 18px">
+        <a class="quick-link" href="#eat"><b>🍽️ What am I eating?</b><span>Pick your dish, get the wine.</span></a>
+        ${pal ? `<a class="quick-link" href="#palate"><b>${pal.emoji} Your wines</b><span>${esc(GRAPE[pal.white.id].name)}, ${esc(GRAPE[pal.red.id].name)} or ${esc(GRAPE[pal.dare.id].name)}. Say: ${esc(pal.say)}</span></a>`
+              : '<a class="quick-link" href="#palate"><b>👅 My Palate</b><span>A 1-minute quiz to find your wines.</span></a>'}
+      </div>
       <nav class="toc" aria-label="Jump to">
-        ${[['c-map', '🗺️ Map'], ['c-grapes', '🍇 Grapes'], ['c-finder', '🔄 If you like…'], ['c-food', '🍽️ Food'], ['c-say', '💬 What to say'], ['c-temp', '🌡️ Serving'], ['c-tips', '👃 Corked?']]
+        ${[['c-map', '🗺️ Map'], ['c-grapes', '🍇 Grapes'], ['c-bonus', '🌟 Bonus grapes'], ['c-finder', '🔄 If you like…'], ['c-food', '🍽️ Food'], ['c-say', '💬 What to say'], ['c-temp', '🌡️ Serving'], ['c-tips', '👃 Corked?']]
           .map(([id, l]) => `<a href="#cheat" data-jump="${id}">${l}</a>`).join('')}
       </nav>
       ${section('c-map', '🗺️', 'The Flavour Map', `<p class="small muted">Left to right = light to full. Top to bottom = fruity to savoury. Like one? Try a neighbour.</p>${flavourMapSVG(GRAPES.map(g => g.id))}`)}
       ${section('c-grapes', '🍇', 'The 8 grapes in a sentence', `
-        <h3>Whites</h3><div class="cheat-grid">${GRAPES.filter(g => g.colour === 'white').map(grapeRow).join('')}</div>
-        <h3 style="margin-top:14px">Reds</h3><div class="cheat-grid">${GRAPES.filter(g => g.colour === 'red').map(grapeRow).join('')}</div>`)}
+        <h3>Whites</h3><div class="cheat-grid">${CORE.filter(g => g.colour === 'white').map(grapeRow).join('')}</div>
+        <h3 style="margin-top:14px">Reds</h3><div class="cheat-grid">${CORE.filter(g => g.colour === 'red').map(grapeRow).join('')}</div>`)}
+      ${section('c-bonus', '🌟', 'Bonus grapes', `
+        <p class="small muted">Labels often name the place: <b>Rioja</b> = Tempranillo, <b>Chianti</b> = Sangiovese, <b>Côtes du Rhône</b> = Grenache.</p>
+        <div class="cheat-grid">${BONUS.map(grapeRow).join('')}</div>`)}
       ${section('c-finder', '🔄', 'If you like… try…', `
         <label for="likeSel" class="small muted">I usually drink…</label>
         <select id="likeSel"><option value="">Choose a wine</option>
-          <optgroup label="The 8 grapes">${GRAPES.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup>
-          <optgroup label="Popular favourites">${FINDER_EXTRAS.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup></select>
+          <optgroup label="The 8 grapes">${CORE.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup>
+          <optgroup label="Bonus grapes">${BONUS.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup>
+          ${FINDER_EXTRAS.length ? `<optgroup label="Popular favourites">${FINDER_EXTRAS.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup>` : ''}</select>
         <div class="try-box" id="tryBox" aria-live="polite"></div>`)}
       ${section('c-food', '🍽️', 'Food matches', `
         <div class="cheat-grid">${DISHES.map(d => `<div class="mini-grape"><div class="face" aria-hidden="true" style="background:#fff">${d.emoji}</div><div><b>${esc(d.dish)}</b><span>${esc(d.wines)}</span></div></div>`).join('')}</div>
@@ -744,6 +757,119 @@
     });
   }
 
+  /* ---------- What am I eating? ---------- */
+  function viewEat(pickIdx) {
+    const cats = [...new Set(DISH_FINDER.map(d => d.cat))];
+    const chip = (d, i) => `<button class="dish-chip" data-i="${i}" aria-pressed="false"><span aria-hidden="true">${d.emoji}</span> ${esc(d.name)}</button>`;
+    render(`
+      <h1>What am I eating?</h1>
+      <p class="muted">Pick your dish and we'll tell you what to order, and what to steer clear of.</p>
+      <label class="sr-only" for="dishSearch">Search dishes</label>
+      <input id="dishSearch" class="dish-search" type="search" placeholder="🔍 Search: curry, pizza, salmon…" autocomplete="off">
+      <div class="card">
+        ${cats.map(c => `<div class="dish-cat" data-cat="${esc(c)}"><h3>${esc(c)}</h3><div class="dish-chips">${DISH_FINDER.map((d, i) => d.cat === c ? chip(d, i) : '').join('')}</div></div>`).join('')}
+        <p class="small muted" id="noDish" hidden>No match. Try a simpler word, like "fish" or "spicy".</p>
+      </div>
+      <div id="dishResult" aria-live="polite"></div>
+      <div class="btn-row" style="justify-content:center"><a class="btn secondary" href="#cheat">📱 Back to At the Table</a></div>`);
+    const show = i => {
+      const d = DISH_FINDER[i];
+      $$('.dish-chip').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.i === i)));
+      $('#dishResult').innerHTML = `
+        <div class="card dish-card">
+          <h2><span aria-hidden="true">${d.emoji}</span> ${esc(d.name)}</h2>
+          <ol class="dish-picks">${d.picks.map((p, n) => `<li><b>${n === 0 ? '🥇 ' : ''}${esc(p.wine)}</b><span>${esc(p.why)}</span></li>`).join('')}</ol>
+          ${d.avoid ? `<p class="dish-avoid"><b>🙅 Steer clear of:</b> ${esc(d.avoid.wine)}. ${esc(d.avoid.why)}</p>` : ''}
+          <p class="small muted" style="margin:0"><b>The rule:</b> ${esc(d.rule)}</p>
+        </div>`;
+      $('#dishResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+    on('.dish-chip', e => show(+e.currentTarget.dataset.i));
+    $('#dishSearch').addEventListener('input', e => {
+      const words = e.target.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      let any = false;
+      $$('.dish-cat').forEach(cat => {
+        let catAny = false;
+        $$('.dish-chip', cat).forEach(b => {
+          const d = DISH_FINDER[+b.dataset.i];
+          const hay = `${d.name} ${d.cat} ${d.picks.map(p => p.wine).join(' ')}`.toLowerCase();
+          const hit = words.every(w => hay.includes(w));
+          b.hidden = !hit; catAny = catAny || hit;
+        });
+        cat.hidden = !catAny; any = any || catAny;
+      });
+      $('#noDish').hidden = any;
+    });
+    if (pickIdx !== undefined && DISH_FINDER[+pickIdx]) show(+pickIdx);
+  }
+
+  /* ---------- My Palate quiz ---------- */
+  function viewPalate() {
+    if (state.palate && PALATE_TYPES[state.palate]) return showPalate(state.palate, false);
+    const scores = {};
+    let i = 0;
+    const ask = () => {
+      const q = PALATE_QUIZ[i];
+      render(`
+        <div class="card">
+          <p class="small muted center" style="margin-bottom:4px">👅 My Palate · ${i + 1} of ${PALATE_QUIZ.length}</p>
+          <div class="progress" aria-hidden="true"><i style="width:${(i / PALATE_QUIZ.length) * 100}%"></i></div>
+          <h2 class="center" style="margin-top:14px">${esc(q.q)}</h2>
+          <p class="small muted center">No wrong answers. Just go with your gut.</p>
+          <div class="options">${q.options.map((o, n) => `<button class="option" data-n="${n}">${esc(o.label)}</button>`).join('')}</div>
+        </div>`, i > 0);
+      on('.option', e => {
+        const o = q.options[+e.currentTarget.dataset.n];
+        Object.entries(o.pts).forEach(([t, n]) => { scores[t] = (scores[t] || 0) + n; });
+        i++;
+        if (i < PALATE_QUIZ.length) return ask();
+        const type = Object.keys(PALATE_TYPES).reduce((best, t) => (scores[t] || 0) > (scores[best] || 0) ? t : best);
+        state.palate = type; save();
+        showPalate(type, true);
+      });
+    };
+    render(`
+      <div class="card center">
+        <span class="big-emoji" aria-hidden="true">👅</span>
+        <h1>My Palate</h1>
+        <p>Seven quick questions about coffee, chocolate and what you love to eat. No wine knowledge needed! We'll match you with a white, a red and one to dare yourself with.</p>
+        <div class="btn-row" style="justify-content:center"><button class="btn" id="go">Let's find out →</button><a class="btn secondary" href="#home">Not now</a></div>
+      </div>`);
+    on('#go', ask);
+  }
+  function showPalate(type, fresh) {
+    const p = PALATE_TYPES[type];
+    const card = (label, pick) => {
+      const g = GRAPE[pick.id];
+      return `<div class="palate-pick"><div class="face ${g.colour}" aria-hidden="true">${g.emoji}</div>
+        <div><span class="small muted">${label}</span><b>${esc(g.name)}</b><span>${esc(pick.why)}</span></div></div>`;
+    };
+    const ids = [p.white.id, p.red.id, p.dare.id];
+    render(`
+      <div class="card center">
+        ${fresh ? '<div class="confetti" aria-hidden="true">🎉 🍷 🎉</div>' : ''}
+        <p class="small muted" style="margin:0">Your palate</p>
+        <span class="big-emoji" aria-hidden="true">${p.emoji}</span>
+        <h1>${esc(p.title)}</h1>
+        <p>${esc(p.text)}</p>
+      </div>
+      <div class="card">
+        <h2 class="section-title">Your wines</h2>
+        ${card('🥂 Your white', p.white)}${card('🍷 Your red', p.red)}${card('🎲 Dare yourself', p.dare)}
+        <p class="say-this"><b>💬 At the restaurant, say:</b> ${esc(p.say)}</p>
+      </div>
+      <div class="card">
+        <h2 class="section-title">Where they sit</h2>
+        <p class="small muted">Your wines glow on the map. Like them? Try their neighbours.</p>
+        ${flavourMapSVG([...new Set([...discoveredGrapes(), ...ids])], ids)}
+      </div>
+      <div class="btn-row" style="justify-content:center">
+        <a class="btn" href="#cheat">📱 At the Table</a>
+        <button class="btn secondary" id="redo">Take the quiz again</button>
+      </div>`);
+    on('#redo', () => { state.palate = null; save(); viewPalate(); });
+  }
+
   /* ---------- Move my progress to another device ----------
      Progress lives on each device, so we pack it into a link. It travels in the
      part of the address after #, which browsers never send to the server. */
@@ -754,7 +880,7 @@
     const c = {};
     Object.keys(state.cellars).forEach(id => { if (state.cellars[id].done) c[id] = state.cellars[id].corks || 0; });
     const t = state.test;
-    const bytes = new TextEncoder().encode(JSON.stringify({ v: MOVE_VERSION, c, b: t.best, p: t.passed ? 1 : 0, n: t.name || '' }));
+    const bytes = new TextEncoder().encode(JSON.stringify({ v: MOVE_VERSION, c, b: t.best, p: t.passed ? 1 : 0, n: t.name || '', q: state.palate || '' }));
     let bin = ''; bytes.forEach(b => { bin += String.fromCharCode(b); });
     return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
@@ -767,6 +893,7 @@
       PLAYABLE.forEach(cl => { if (cl.id in d.c) s.cellars[cl.id] = { done: true, corks: Math.max(0, +d.c[cl.id] || 0) }; });
       s.test = { best: typeof d.b === 'number' ? Math.max(0, Math.min(100, d.b)) : null, passed: !!d.p, name: String(d.n || '').slice(0, 60), last: null };
       s.corks = Object.values(s.cellars).reduce((n, x) => n + x.corks, 0) + (s.test.passed ? 10 : 0);
+      s.palate = PALATE_TYPES[d.q] ? d.q : null;
       return s;
     } catch (e) { return null; }
   }
@@ -794,6 +921,7 @@
       name: ta.name || tb.name || '',
       last: lasts[0] || null
     };
+    out.palate = mine.palate || theirs.palate || null;
     out.missed = Array.from(new Set([...(mine.missed || []), ...(theirs.missed || [])])).filter(id => QUESTIONS[id]);
     // Corks are the sum of your best score in each Cellar, plus 10 for passing the test
     out.corks = Object.values(out.cellars).reduce((n, c) => n + c.corks, 0) + (out.test.passed ? 10 : 0);

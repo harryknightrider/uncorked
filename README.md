@@ -45,6 +45,9 @@ To publish changes: bump `VERSION` in `sw.js`, then run `git add -A && git commi
 
 - **Add a question:** add an entry to `QUESTIONS` in `js/data.js`, then list its id in a Cellar's `questions` or in a `FINAL_TEST` pool.
 - **Change a grape:** edit its entry in `GRAPES`. `map.x` is body (0 light → 100 full) and `map.y` is fruity (0) → savoury (100).
+- **Add a dish to "What am I eating?":** add an entry to `DISH_FINDER` (emoji, name, cat, picks, optional avoid, rule).
+- **Tweak My Palate:** questions and points are in `PALATE_QUIZ`. The six personalities and their wines are in `PALATE_TYPES`.
+- **Add a grape:** add it to `GRAPES`. Use `bonus: true` for anything beyond the core eight, and `labelLeft: true` if its Flavour Map label clashes with a neighbour.
 - **Add a Cellar:** copy an existing one in `CELLARS` and remove `comingSoon: true`. Step types: `learn`, `sort`, `mcq`, `recall`, `whoami`, `order`, `pair`.
 
 *Not affiliated with WSET. Please drink responsibly.*

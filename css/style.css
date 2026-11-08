@@ -334,3 +334,28 @@ input[type="text"]:focus { border-color: var(--wine); outline: none; }
 /* Move my progress */
 .move-link { width: 100%; margin: 6px 0 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; font: inherit; font-size: .8rem; color: var(--muted); background: var(--cream); text-overflow: ellipsis; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* What am I eating? */
+.dish-search { width: 100%; margin: 6px 0 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; font: inherit; background: var(--paper); }
+.dish-cat h3 { margin: 6px 0 8px; font-size: 1rem; }
+.dish-cat + .dish-cat { margin-top: 12px; }
+.dish-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.dish-chip { border: 1px solid var(--line); background: var(--cream); border-radius: 999px; padding: 8px 12px; font: inherit; font-size: .92rem; cursor: pointer; color: var(--ink); }
+.dish-chip:hover { border-color: var(--wine); }
+.dish-chip[aria-pressed="true"] { background: var(--wine); color: #fff; border-color: var(--wine); }
+.dish-card h2 { margin-top: 0; }
+.dish-picks { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 8px; }
+.dish-picks li { background: var(--wine-soft); border-radius: 12px; padding: 10px 14px; }
+.dish-picks li b { display: block; }
+.dish-picks li span { font-size: .9rem; color: var(--muted); }
+.dish-avoid { background: var(--oops-soft); border-radius: 12px; padding: 10px 14px; font-size: .92rem; }
+
+/* My Palate */
+.palate-pick { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.palate-pick:last-of-type { border-bottom: 0; }
+.palate-pick .face { flex: 0 0 52px; height: 52px; font-size: 1.6rem; border-radius: 50%; display: grid; place-items: center; }
+.palate-pick b { display: block; font-family: var(--font-head); font-size: 1.1rem; color: var(--wine-dark); }
+.palate-pick span { display: block; font-size: .9rem; }
+.say-this { background: var(--gold-soft); border-radius: 12px; padding: 10px 14px; margin: 12px 0 0; }
+.progress { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--wine); border-radius: 99px; transition: width .3s; }
