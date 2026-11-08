@@ -63,7 +63,8 @@
   function route() {
     if (!state.ageOk) return viewGate();
     const [name, arg] = (location.hash.replace('#', '') || 'home').split('/');
-    const routes = { home: viewHome, map: viewMap, cheat: viewCheat, test: startTest, results: viewResults, cellar: () => startCellar(arg) };
+    const routes = { home: viewHome, map: viewMap, cheat: viewCheat, test: startTest, results: viewResults, cellar: () => startCellar(arg),
+      move: viewMove, import: () => viewImport(arg) };
     (routes[name] || viewHome)();
   }
   function go(hash) { if (location.hash === '#' + hash) route(); else location.hash = hash; }
@@ -89,7 +90,7 @@
           <p class="small muted" style="margin-top:18px">This game is about wine, so it's for adults of legal drinking age only.</p>
         </div>
       </section>`);
-    on('#yes', () => { state.ageOk = true; save(); go('home'); });
+    on('#yes', () => { state.ageOk = true; save(); location.hash.startsWith('#import/') ? route() : go('home'); });
     on('#no', () => {
       $('.card').innerHTML = `<span class="bottle" aria-hidden="true">🧃</span><h2>Come back when you're 18!</h2><p class="muted">In the meantime, grape juice is pretty delicious too. 🍇</p>`;
     });
@@ -741,6 +742,124 @@
       const g = GRAPE[e.target.value] || FINDER_EXTRAS.find(x => x.id === e.target.value);
       $('#tryBox').innerHTML = g ? g.tryNext.map(t => `<div class="try"><b>Try ${esc(t.name)}</b><br><span class="small">${esc(t.why)}</span></div>`).join('') : '';
     });
+  }
+
+  /* ---------- Move my progress to another device ----------
+     Progress lives on each device, so we pack it into a link. It travels in the
+     part of the address after #, which browsers never send to the server. */
+  const MOVE_VERSION = 1;
+  // Kept short so the link survives emails and messages: just the finished Cellars
+  // (with best corks), best test score, pass, and certificate name.
+  function packProgress() {
+    const c = {};
+    Object.keys(state.cellars).forEach(id => { if (state.cellars[id].done) c[id] = state.cellars[id].corks || 0; });
+    const t = state.test;
+    const bytes = new TextEncoder().encode(JSON.stringify({ v: MOVE_VERSION, c, b: t.best, p: t.passed ? 1 : 0, n: t.name || '' }));
+    let bin = ''; bytes.forEach(b => { bin += String.fromCharCode(b); });
+    return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function unpackProgress(code) {
+    try {
+      const bin = atob(code.replace(/-/g, '+').replace(/_/g, '/'));
+      const d = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, ch => ch.charCodeAt(0))));
+      if (!d || d.v !== MOVE_VERSION || typeof d.c !== 'object') return null;
+      const s = freshState();
+      PLAYABLE.forEach(cl => { if (cl.id in d.c) s.cellars[cl.id] = { done: true, corks: Math.max(0, +d.c[cl.id] || 0) }; });
+      s.test = { best: typeof d.b === 'number' ? Math.max(0, Math.min(100, d.b)) : null, passed: !!d.p, name: String(d.n || '').slice(0, 60), last: null };
+      s.corks = Object.values(s.cellars).reduce((n, x) => n + x.corks, 0) + (s.test.passed ? 10 : 0);
+      return s;
+    } catch (e) { return null; }
+  }
+  function summarise(s) {
+    const done = PLAYABLE.filter(c => s.cellars && s.cellars[c.id] && s.cellars[c.id].done).length;
+    const t = s.test || {};
+    const test = t.passed ? `passed the Sommelier Challenge (best ${t.best}%)` : t.best != null ? `best test score ${t.best}%` : 'not taken the final test yet';
+    return { done, text: `${done} of ${PLAYABLE.length} Cellars done, ${plural(s.corks || 0, 'cork')}, ${test}` };
+  }
+  // Combine two sets of progress, keeping the best of each, so nothing is ever lost.
+  function mergeProgress(mine, theirs) {
+    const out = freshState();
+    out.ageOk = true;
+    PLAYABLE.forEach(c => {
+      const a = mine.cellars[c.id], b = theirs.cellars[c.id];
+      if (!a && !b) return;
+      out.cellars[c.id] = { done: !!((a && a.done) || (b && b.done)), corks: Math.max((a && +a.corks) || 0, (b && +b.corks) || 0) };
+    });
+    const ta = mine.test || {}, tb = theirs.test || {};
+    const bests = [ta.best, tb.best].filter(x => typeof x === 'number');
+    const lasts = [ta.last, tb.last].filter(Boolean).sort((x, y) => String(y.date).localeCompare(String(x.date)));
+    out.test = {
+      best: bests.length ? Math.max(...bests) : null,
+      passed: !!(ta.passed || tb.passed),
+      name: ta.name || tb.name || '',
+      last: lasts[0] || null
+    };
+    out.missed = Array.from(new Set([...(mine.missed || []), ...(theirs.missed || [])])).filter(id => QUESTIONS[id]);
+    // Corks are the sum of your best score in each Cellar, plus 10 for passing the test
+    out.corks = Object.values(out.cellars).reduce((n, c) => n + c.corks, 0) + (out.test.passed ? 10 : 0);
+    return out;
+  }
+
+  function viewMove() {
+    const link = `${location.origin}${location.pathname}#import/${packProgress()}`;
+    const sum = summarise(state);
+    render(`
+      <div class="card center">
+        <span class="big-emoji" aria-hidden="true">📲</span>
+        <h1>Move my progress</h1>
+        <p>Your progress is saved on this device only. To carry on somewhere else, send yourself this link and open it on your other phone or computer.</p>
+        <p class="small muted">This link holds: <b>${esc(sum.text)}</b>${state.test.name ? `, and the name <b>${esc(state.test.name)}</b> for your certificate` : ''}.</p>
+        <label class="sr-only" for="moveLink">Your progress link</label>
+        <input id="moveLink" class="move-link" type="text" readonly value="${esc(link)}">
+        <div class="btn-row" style="justify-content:center">
+          ${navigator.share ? '<button class="btn" id="shareLink">Send it…</button>' : ''}
+          <button class="btn ${navigator.share ? 'secondary' : ''}" id="copyLink">Copy link</button>
+          <a class="btn secondary" href="mailto:?subject=${encodeURIComponent('My Uncorked progress')}&body=${encodeURIComponent('Open this on my other device to carry on where I left off:\n\n' + link)}">Email it to myself</a>
+        </div>
+        <p class="small muted" id="copyMsg" aria-live="polite"></p>
+        <p class="small muted">Nothing is uploaded or stored online. The link is a snapshot, so if you play on both devices, send a new one now and then. Opening it keeps the best of both, so you never lose anything.</p>
+        <div class="btn-row" style="justify-content:center"><a class="btn secondary" href="#home">← Back to the game</a></div>
+      </div>`);
+    const input = $('#moveLink');
+    on('#moveLink', () => input.select());
+    on('#copyLink', async () => {
+      try { await navigator.clipboard.writeText(link); }
+      catch (e) { input.select(); document.execCommand('copy'); }
+      $('#copyMsg').textContent = 'Copied! Paste it into a message or note to yourself.';
+    });
+    on('#shareLink', () => { navigator.share({ title: 'My Uncorked progress', text: 'Open this to carry on where I left off in Uncorked:', url: link }).catch(() => {}); });
+  }
+
+  function viewImport(code) {
+    const theirs = unpackProgress(code || '');
+    const back = () => history.replaceState(null, '', location.pathname + '#home');
+    if (!theirs) {
+      render(`<div class="card center"><span class="big-emoji" aria-hidden="true">🤔</span><h1>Hmm, that link didn't work</h1>
+        <p>It might have been cut short when it was copied. Try sending it again from your other device, using <b>Move my progress</b> at the bottom of the page.</p>
+        <div class="btn-row" style="justify-content:center"><a class="btn" href="#home">Go to the game</a></div></div>`);
+      return;
+    }
+    const merged = mergeProgress(state, theirs);
+    const a = summarise(theirs), now = summarise(state), after = summarise(merged);
+    render(`
+      <div class="card center">
+        <span class="big-emoji" aria-hidden="true">📲</span>
+        <h1>Bring your progress across?</h1>
+        <p><b>From the link:</b> ${esc(a.text)}.</p>
+        <p class="muted"><b>On this device now:</b> ${esc(now.text)}.</p>
+        <p>We'll keep the best of both, so you'll have <b>${esc(after.text)}</b>.</p>
+        <div class="btn-row" style="justify-content:center">
+          <button class="btn" id="doImport">Yes, bring it across</button>
+          <button class="btn secondary" id="noImport">No thanks</button>
+        </div>
+      </div>`);
+    on('#doImport', () => {
+      state = merged; save(); back();
+      render(`<div class="card center"><div class="confetti" aria-hidden="true">🎉 🍾 🎉</div><h1>All moved across!</h1>
+        <p>${esc(after.text)}. Carry on where you left off.</p>
+        <div class="btn-row" style="justify-content:center"><a class="btn" href="#home">Back to the game</a><a class="btn secondary" href="#cheat">At the Table</a></div></div>`);
+    });
+    on('#noImport', () => { back(); route(); });
   }
 
   /* ---------- Reset ---------- */
