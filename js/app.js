@@ -65,7 +65,7 @@
     if (!state.ageOk) return viewGate();
     const [name, arg] = (location.hash.replace('#', '') || 'home').split('/');
     const routes = { home: viewHome, map: viewMap, cheat: viewCheat, test: startTest, results: viewResults, cellar: () => startCellar(arg),
-      move: viewMove, import: () => viewImport(arg), eat: () => viewEat(arg), palate: viewPalate };
+      homescreen: viewHomescreen, move: viewMove, import: () => viewImport(arg), eat: () => viewEat(arg), palate: viewPalate };
     (routes[name] || viewHome)();
   }
   function go(hash) { if (location.hash === '#' + hash) route(); else location.hash = hash; }
@@ -723,22 +723,6 @@
     render(`
       <h1>At the Table</h1>
       <p class="muted">Your pocket cheat sheet. Pull it up at the restaurant or in the supermarket.</p>
-      <details class="howto">
-        <summary>📲 Add Uncorked to your home screen</summary>
-        <p class="small">One tap to your cheat sheet, and it works offline too.</p>
-        <h3>iPhone (Safari)</h3>
-        <ol>
-          <li>Tap <b>Share</b> (the square with an arrow pointing up) or the <b>⋯</b> menu.</li>
-          <li>Tap <b>Add to Home Screen</b>.</li>
-          <li>Turn <b>"Open as Web App" off</b>, then tap <b>Add</b>.</li>
-        </ol>
-        <p class="small muted">Why switch it off? If it's on, your iPhone keeps a separate copy of your progress for the icon, so your Cellars won't show. If you've already added it with the switch on, delete the icon and add it again.</p>
-        <h3>Android (Chrome)</h3>
-        <ol>
-          <li>Tap the <b>⋮</b> menu at the top right.</li>
-          <li>Tap <b>Add to Home screen</b>, then <b>Add</b>.</li>
-        </ol>
-      </details>
       <div class="quick-links" style="margin:14px 0 18px">
         <a class="quick-link" href="#eat"><b>🍽️ What am I eating?</b><span>Pick your dish, get the wine.</span></a>
         ${pal ? `<a class="quick-link" href="#palate"><b>${pal.emoji} Your wines</b><span>${esc(GRAPE[pal.white.id].name)}, ${esc(GRAPE[pal.red.id].name)} or ${esc(GRAPE[pal.dare.id].name)}. Say: ${esc(pal.say)}</span></a>`
@@ -890,6 +874,29 @@
         <button class="btn secondary" id="redo">Take the quiz again</button>
       </div>`);
     on('#redo', () => { state.palate = null; save(); viewPalate(); });
+  }
+
+  /* ---------- How to add Uncorked to your home screen ---------- */
+  function viewHomescreen() {
+    render(`
+      <div class="card howto">
+        <div class="center"><span class="big-emoji" aria-hidden="true">📲</span>
+        <h1>Add to your home screen</h1></div>
+        <p class="small">One tap to your cheat sheet, and it works offline too.</p>
+        <h3>iPhone (Safari)</h3>
+        <ol>
+          <li>Tap <b>Share</b> (the square with an arrow pointing up) or the <b>⋯</b> menu.</li>
+          <li>Tap <b>Add to Home Screen</b>.</li>
+          <li>Turn <b>"Open as Web App" off</b>, then tap <b>Add</b>.</li>
+        </ol>
+        <p class="small muted">Why switch it off? If it's on, your iPhone keeps a separate copy of your progress for the icon, so your Cellars won't show. If you've already added it with the switch on, delete the icon and add it again.</p>
+        <h3>Android (Chrome)</h3>
+        <ol>
+          <li>Tap the <b>⋮</b> menu at the top right.</li>
+          <li>Tap <b>Add to Home screen</b>, then <b>Add</b>.</li>
+        </ol>
+      </div>
+      <div class="btn-row" style="justify-content:center"><a class="btn" href="#cheat">📱 At the Table</a><a class="btn secondary" href="#home">Back to the game</a></div>`);
   }
 
   /* ---------- Move my progress to another device ----------
