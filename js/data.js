@@ -613,6 +613,20 @@ const FINAL_TEST = {
     { topic: 'serving', take: 2, ids: ['f1', 'f2', 'f3', 'f4', 'f5', 'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7'] },
     { topic: 'scenario', take: 6, ids: ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12'] }
   ],
+  // Questions that test the same idea. A test never includes more than one from a group.
+  sameIdea: [
+    ['s1', 's11', 'p4'],        // steak softens tannin
+    ['s2', 'p3'],               // spicy food
+    ['w3', 's8'],               // Chablis
+    ['w2', 'c3'],               // oak = vanilla and toast
+    ['w4', 's9'],               // Riesling: dry or sweet
+    ['t1', 's7'],               // if you like Merlot…
+    ['s3', 'p8'],               // salads
+    ['s4', 's6', 'w1'],         // unoaked, crisp whites
+    ['f1', 'f2'],               // corked wine
+    ['c5', 'c6'],               // how bubbles are made
+    ['c1', 'c7']                // cool climate = lighter
+  ],
   topicNames: { basics: 'The Basics', whites: 'White grapes', reds: 'Red grapes', climate: 'Climate, oak & bubbles', pairing: 'Food & wine', serving: 'Serving & storing', scenario: 'Real-world ordering' },
   topicLinks: { basics: 'basics', whites: 'whites', reds: 'reds', climate: 'climate', pairing: 'dinner', serving: 'serve', scenario: 'cheat' },
   ranks: [
@@ -624,13 +638,23 @@ const FINAL_TEST = {
 };
 
 /* ---------- Cheat sheet extras ---------- */
+// Popular wines that aren't one of the 8 core grapes, shown in the
+// "If you like… try…" finder. Add more in the same shape.
+const FINDER_EXTRAS = [
+  { id: 'malbec', name: 'Malbec', tryNext: [
+    { name: 'Australian Shiraz', why: 'Just as dark, plush and generous, with a peppery, spicy kick.' },
+    { name: 'Chilean Carmenère', why: 'Like Malbec, a Bordeaux grape that found fame in South America. Soft and plummy, with a hint of green pepper, and often great value.' },
+    { name: 'Rioja Crianza (Tempranillo)', why: 'Smooth and juicy, with a touch of vanilla from oak. A gentle step towards Europe.' }
+  ] }
+];
+
 const PAIRING_RULES = [
-  { emoji: '⚖️', rule: 'Match weight with weight', detail: 'Light food → light wine. Rich food → fuller wine.' },
-  { emoji: '🥩', rule: 'Tannin loves protein and fat', detail: 'Steak softens a grippy red.' },
+  { emoji: '⚖️', rule: 'Match weight with weight', detail: 'Light food → light wine. Rich food → fuller wine. Think Pinot Grigio with a salad, Shiraz with a beef stew.' },
+  { emoji: '🥩', rule: 'Tannin loves protein and fat', detail: 'Steak softens a grippy red. Go for Cabernet Sauvignon or Malbec.' },
   { emoji: '🧂', rule: 'Salt and acid are wine\'s friends', detail: 'They make wine taste softer and fruitier.' },
   { emoji: '🌶️', rule: 'Spicy food? Go low alcohol, a touch sweet', detail: 'Chilli makes alcohol and tannin burn. Try off-dry Riesling.' },
-  { emoji: '🍰', rule: 'Pudding needs a sweeter wine', detail: 'The wine should be at least as sweet as the dessert.' },
-  { emoji: '🍄', rule: 'Sweet or umami food makes wine harsher', detail: 'Choose fruitier, softer wines with mushrooms and sweet sauces.' }
+  { emoji: '🍰', rule: 'Pudding needs a sweeter wine', detail: 'The wine should be at least as sweet as the dessert. Try Sauternes or a sweet Muscat.' },
+  { emoji: '🍄', rule: 'Sweet or umami food makes wine harsher', detail: 'Choose fruitier, softer wines. Pinot Noir with a mushroom risotto is a classic.' }
 ];
 
 const DISHES = [

@@ -1,6 +1,6 @@
 /* Uncorked service worker: lets the game and cheat sheet work offline.
    Bump VERSION whenever you change any file so players get the update. */
-const VERSION = 'uncorked-v2';
+const VERSION = 'uncorked-v3';
 const ASSETS = ['./', 'index.html', 'css/style.css', 'js/data.js', 'js/app.js', 'icon.svg', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {

@@ -516,8 +516,38 @@
      ====================================================================== */
   const rankFor = pct => FINAL_TEST.ranks.find(r => pct >= r.min);
 
+  // Draw the test: the right number from each topic, never two questions on the
+  // same idea (FINAL_TEST.sameIdea), and never two from the same topic in a row.
+  function pickTestQuestions() {
+    const groupOf = {};
+    (FINAL_TEST.sameIdea || []).forEach((g, i) => g.forEach(id => { groupOf[id] = i; }));
+    const usedGroups = new Set();
+    const picked = [];
+    // Biggest pools first, so scenarios get first choice of ideas
+    [...FINAL_TEST.pools].sort((a, b) => b.take - a.take).forEach(pool => {
+      const chosen = [], spare = [];
+      shuffle(pool.ids).forEach(id => {
+        const clash = id in groupOf && usedGroups.has(groupOf[id]);
+        if (chosen.length < pool.take && !clash) {
+          chosen.push(id);
+          if (id in groupOf) usedGroups.add(groupOf[id]);
+        } else spare.push(id);
+      });
+      // Only if a topic runs out of fresh ideas, top up with whatever is left
+      picked.push(...chosen, ...spare.slice(0, pool.take - chosen.length));
+    });
+    // Order them so the same topic never comes up twice in a row
+    let best = shuffle(picked), bestClashes = Infinity;
+    for (let tries = 0; tries < 200 && bestClashes > 0; tries++) {
+      const order = shuffle(picked);
+      const clashes = order.filter((id, i) => i && QUESTIONS[id].topic === QUESTIONS[order[i - 1]].topic).length;
+      if (clashes < bestClashes) { best = order; bestClashes = clashes; }
+    }
+    return best;
+  }
+
   function startTest() {
-    const ids = shuffle(FINAL_TEST.pools.flatMap(p => shuffle(p.ids).slice(0, p.take)));
+    const ids = pickTestQuestions();
     const results = {};
     // Intro screen
     render(`
@@ -692,7 +722,9 @@
         <h3 style="margin-top:14px">Reds</h3><div class="cheat-grid">${GRAPES.filter(g => g.colour === 'red').map(grapeRow).join('')}</div>`)}
       ${section('c-finder', '🔄', 'If you like… try…', `
         <label for="likeSel" class="small muted">I usually drink…</label>
-        <select id="likeSel"><option value="">Choose a grape</option>${GRAPES.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</select>
+        <select id="likeSel"><option value="">Choose a wine</option>
+          <optgroup label="The 8 grapes">${GRAPES.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup>
+          <optgroup label="Popular favourites">${FINDER_EXTRAS.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')}</optgroup></select>
         <div class="try-box" id="tryBox" aria-live="polite"></div>`)}
       ${section('c-food', '🍽️', 'Food matches', `
         <div class="cheat-grid">${DISHES.map(d => `<div class="mini-grape"><div class="face" aria-hidden="true" style="background:#fff">${d.emoji}</div><div><b>${esc(d.dish)}</b><span>${esc(d.wines)}</span></div></div>`).join('')}</div>
@@ -706,7 +738,7 @@
 
     on('[data-jump]', e => { e.preventDefault(); document.getElementById(e.currentTarget.dataset.jump).scrollIntoView({ behavior: 'smooth' }); });
     $('#likeSel').addEventListener('change', e => {
-      const g = GRAPE[e.target.value];
+      const g = GRAPE[e.target.value] || FINDER_EXTRAS.find(x => x.id === e.target.value);
       $('#tryBox').innerHTML = g ? g.tryNext.map(t => `<div class="try"><b>Try ${esc(t.name)}</b><br><span class="small">${esc(t.why)}</span></div>`).join('') : '';
     });
   }
