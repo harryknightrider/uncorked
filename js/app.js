@@ -954,7 +954,7 @@
         <p class="small muted">Nothing is uploaded or stored online. The link is a snapshot, so if you play on both devices, send a new one now and then. Opening it keeps the best of both, so you never lose anything.</p>
         <div class="paste-box">
           <h2 style="font-size:1.2rem;margin:0 0 4px">Got a link from another device?</h2>
-          <p class="small muted" style="margin:0 0 8px">Paste it here. This is the way to do it in the app on your home screen, which keeps its own progress, separate from your browser.</p>
+          <p class="small muted" style="margin:0 0 8px">Paste it here, or just tap the link wherever you sent it.</p>
           <label class="sr-only" for="pasteLink">Paste your progress link</label>
           <input id="pasteLink" class="move-link" type="text" placeholder="Paste your link here" autocomplete="off" autocapitalize="off" spellcheck="false">
           <button class="btn" id="usePasted">Bring it across</button>

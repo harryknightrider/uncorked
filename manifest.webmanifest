@@ -4,7 +4,7 @@
   "description": "A playful game that teaches the basics of wine, plus a cheat sheet for ordering.",
   "start_url": "./index.html#cheat",
   "scope": "./",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#fbf5ec",
   "theme_color": "#7a1f3d",
   "icons": [
