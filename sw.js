@@ -2,7 +2,7 @@
    Online, it always fetches the latest files (so updates show straight away)
    and saves a copy. Offline, or on a very slow connection, it uses the saved copy.
    Bump VERSION whenever you change any file. */
-const VERSION = 'uncorked-v9';
+const VERSION = 'uncorked-v10';
 const ASSETS = ['./', 'index.html', 'css/style.css', 'js/data.js', 'js/app.js', 'icon.svg', 'manifest.webmanifest'];
 const NETWORK_TIMEOUT = 4000; // ms before falling back to the saved copy
 

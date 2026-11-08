@@ -361,3 +361,10 @@ input[type="text"]:focus { border-color: var(--wine); outline: none; }
 .progress i { display: block; height: 100%; background: var(--wine); border-radius: 99px; transition: width .3s; }
 .paste-box { text-align: left; background: var(--cream); border-radius: 14px; padding: 14px 16px; margin: 18px 0; }
 .paste-box .btn { width: 100%; }
+
+/* Home-screen how-to */
+.howto { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 10px 16px; margin: 10px 0 4px; }
+.howto summary { cursor: pointer; font-weight: 800; color: var(--wine-dark); }
+.howto h3 { font-size: 1rem; margin: 12px 0 4px; }
+.howto ol { margin: 0 0 6px; padding-left: 22px; }
+.howto li { margin: 3px 0; }
