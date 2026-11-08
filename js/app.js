@@ -952,6 +952,14 @@
         </div>
         <p class="small muted" id="copyMsg" aria-live="polite"></p>
         <p class="small muted">Nothing is uploaded or stored online. The link is a snapshot, so if you play on both devices, send a new one now and then. Opening it keeps the best of both, so you never lose anything.</p>
+        <div class="paste-box">
+          <h2 style="font-size:1.2rem;margin:0 0 4px">Got a link from another device?</h2>
+          <p class="small muted" style="margin:0 0 8px">Paste it here. This is the way to do it in the app on your home screen, which keeps its own progress, separate from your browser.</p>
+          <label class="sr-only" for="pasteLink">Paste your progress link</label>
+          <input id="pasteLink" class="move-link" type="text" placeholder="Paste your link here" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <button class="btn" id="usePasted">Bring it across</button>
+          <p class="small" id="pasteMsg" aria-live="polite" style="color:var(--oops)"></p>
+        </div>
         <div class="btn-row" style="justify-content:center"><a class="btn secondary" href="#home">← Back to the game</a></div>
       </div>`);
     const input = $('#moveLink');
@@ -961,7 +969,14 @@
       catch (e) { input.select(); document.execCommand('copy'); }
       $('#copyMsg').textContent = 'Copied! Paste it into a message or note to yourself.';
     });
-    on('#shareLink', () => { navigator.share({ title: 'My Uncorked progress', text: 'Open this to carry on where I left off in Uncorked:', url: link }).catch(() => {}); });
+    on('#usePasted', () => {
+      const text = $('#pasteLink').value.trim();
+      const m = text.match(/#import\/([A-Za-z0-9_-]+)/);
+      const code = m ? m[1] : (/^[A-Za-z0-9_-]{20,}$/.test(text) ? text : '');
+      if (!code || !unpackProgress(code)) { $('#pasteMsg').textContent = "That doesn't look like a progress link. Copy the whole link and try again."; return; }
+      go('import/' + code);
+    });
+        on('#shareLink', () => { navigator.share({ title: 'My Uncorked progress', text: 'Open this to carry on where I left off in Uncorked:', url: link }).catch(() => {}); });
   }
 
   function viewImport(code) {
