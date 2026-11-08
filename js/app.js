@@ -70,6 +70,12 @@
   }
   function go(hash) { if (location.hash === '#' + hash) route(); else location.hash = hash; }
   window.addEventListener('hashchange', route);
+  // A link to the page's own address (e.g. "#home" while the address already says #home)
+  // doesn't fire hashchange, so handle it here. Skips in-page jump links, which cancel the click.
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (a && !e.defaultPrevented && a.getAttribute('href') === location.hash) { e.preventDefault(); route(); }
+  });
 
   /* ======================================================================
      VIEWS
